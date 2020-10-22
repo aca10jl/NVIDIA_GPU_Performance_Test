@@ -15,6 +15,7 @@ Record the best result from three runs (e.g. python fp16.py && python fp16.py &&
 
 ## matmul
 TF32: 57.170ms per iter
+
 FP32: 101.313ms per iter
 
 ## mixed precision
