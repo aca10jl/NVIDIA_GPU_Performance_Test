@@ -12,6 +12,7 @@ parser.add_argument('--iteration', '-i', default=100, type=int, help='Test itera
 parser.add_argument('--gpu', '-g', default=0, type=int, help='GPU ID')
 parser.add_argument('--seed', '-s', default=666, type=int, help='Random seed')
 parser.add_argument('--precision', '-p', default='fp32', type=str, help='Precisions: fp32, fp16, tf32, mixed')
+parser.add_argument('--data_parallel', '-dp', action='store_true', help='Data parallelisation')
 args = parser.parse_args()
 
 # Set precisions
@@ -26,7 +27,7 @@ else:
 # PyTorch random number generator
 torch.manual_seed(args.seed)
 
-# Build a simple neural network
+# Define a neural network
 class model(nn.Module):
     def __init__(self):
         super(model, self).__init__()
@@ -43,18 +44,24 @@ class model(nn.Module):
 
         return out
 
-# Generate random data
+# Setup the model
+m = model()
+if args.data_parallel:
+    m = torch.nn.DataParallel(m, device_ids=range(torch.cuda.device_count()))
+    args.gpu = None
+
+# Generate random training data
 y = torch.randint(0, 10, (args.batch_size,)).cuda(args.gpu)
 if args.precision in ['tf32', 'mixed']:
     x = torch.randn(args.batch_size, 3, 224, 224).cuda(args.gpu)
-    m = model().cuda(args.gpu)
+    m = m.cuda(args.gpu)
 else:
     if args.precision == 'fp16':
         dtype = torch.float16
     elif args.precision == 'fp32':
         dtype = torch.float32
     x = torch.randn(args.batch_size, 3, 224, 224).cuda(args.gpu).to(dtype)
-    m = model().cuda(args.gpu).to(dtype)
+    m = m.cuda(args.gpu).to(dtype)
 criterion = nn.CrossEntropyLoss()
 optim = torch.optim.Adam(m.parameters(), 1e-4)
 if args.precision == 'mixed':
@@ -93,4 +100,9 @@ for _ in range(args.iteration):
         loss.backward()
 torch.cuda.synchronize()
 t1 = time.time()
-print('{:.3f}ms per iter'.format((t1 - t0)/args.iteration * 1000.))
+if args.data_parallel:
+    for g in range(torch.cuda.device_count()):
+        print('GPU {}:\t{}'.format(g, torch.cuda.get_device_name(g)))
+else:
+    print('GPU {}:\t{}'.format(args.gpu, torch.cuda.get_device_name(args.gpu)))
+print('Perf.:\t{:.3f} ms per iter'.format((t1 - t0)/args.iteration * 1000.))
