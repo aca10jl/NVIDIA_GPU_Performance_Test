@@ -22,7 +22,7 @@ python gpu_test.py -p tp32
 ```bash
 python gpu_test.py -p mixed
 ```
-6. Test on data parallelisation
+6. Test on data parallelisation with multiple GPUs
 ```bash
 python gpu_test.py -dp
 ```
