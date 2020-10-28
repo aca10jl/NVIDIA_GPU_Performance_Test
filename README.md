@@ -22,11 +22,15 @@ python gpu_test.py -p tp32
 ```bash
 python gpu_test.py -p mixed
 ```
-6. Test on matmul operations
+6. Test on data parallelisation
+```bash
+python gpu_test.py -dp
+```
+7. Test on matmul operations
 ```bash
 python matmul.py
 ```
-7. P2P Bandwidth and Latency Tests
+8. P2P Bandwidth and Latency Tests
 - Compile the application. You may need to modify the makefile ([#1](https://github.com/aca10jl/NVIDIA_GPU_Performance_Test/blob/71f9883fe170e21dcca2de49625232db3717b248/P2PBandwidthLatency/Makefile#L271) and [#2](https://github.com/aca10jl/NVIDIA_GPU_Performance_Test/blob/71f9883fe170e21dcca2de49625232db3717b248/P2PBandwidthLatency/Makefile#L273)) to adapt to your GPU archtechture. 
 ```bash
 make
