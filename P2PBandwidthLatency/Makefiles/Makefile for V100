@@ -312,14 +312,14 @@ p2pBandwidthLatencyTest.o:p2pBandwidthLatencyTest.cu
 
 p2pBandwidthLatencyTest: p2pBandwidthLatencyTest.o
 	$(EXEC) $(NVCC) $(ALL_LDFLAGS) $(GENCODE_FLAGS) -o $@ $+ $(LIBRARIES)
-	$(EXEC) mkdir -p ../../bin/$(TARGET_ARCH)/$(TARGET_OS)/$(BUILD_TYPE)
-	$(EXEC) cp $@ ../../bin/$(TARGET_ARCH)/$(TARGET_OS)/$(BUILD_TYPE)
+	$(EXEC) mkdir -p ./bin/$(TARGET_ARCH)/$(TARGET_OS)/$(BUILD_TYPE)
+	$(EXEC) cp $@ ./bin/$(TARGET_ARCH)/$(TARGET_OS)/$(BUILD_TYPE)
 
 run: build
 	$(EXEC) ./p2pBandwidthLatencyTest
 
 clean:
 	rm -f p2pBandwidthLatencyTest p2pBandwidthLatencyTest.o
-	rm -rf ../../bin/$(TARGET_ARCH)/$(TARGET_OS)/$(BUILD_TYPE)/p2pBandwidthLatencyTest
+	rm -rf ./bin/$(TARGET_ARCH)/$(TARGET_OS)/$(BUILD_TYPE)/p2pBandwidthLatencyTest
 
 clobber: clean
