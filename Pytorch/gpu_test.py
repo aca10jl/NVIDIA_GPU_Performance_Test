@@ -68,33 +68,38 @@ if args.precision == 'mixed':
     scaler = GradScaler()
 
 # Warm up
-for _ in range(10):
-    m.zero_grad()
-    if args.precision == 'mixed':
+if args.precision == 'mixed':
+    for _ in range(10):
+        m.zero_grad()
         with autocast():
             output = m(x)
             loss = criterion(output, y)
         scaler.scale(loss).backward()
         scaler.step(optim)
         scaler.update()
-    else:
+else:
+    for _ in range(10):
+        m.zero_grad()
         output = m(x)
         loss = criterion(output, y)
         loss.backward()
 
 # Main tests start here
 torch.cuda.synchronize()
-t0 = time.time()
-for _ in range(args.iteration):
-    m.zero_grad()
-    if args.precision == 'mixed':
+if args.precision == 'mixed':
+    t0 = time.time()
+    for _ in range(args.iteration):
+        m.zero_grad()
         with autocast():
             output = m(x)
             loss = criterion(output, y)
         scaler.scale(loss).backward()
         scaler.step(optim)
         scaler.update()
-    else:
+else:
+    t0 = time.time()
+    for _ in range(args.iteration):
+        m.zero_grad()
         output = m(x)
         loss = criterion(output, y)
         loss.backward()
@@ -105,4 +110,4 @@ if args.data_parallel:
         print('GPU {}:\t{}'.format(g, torch.cuda.get_device_name(g)))
 else:
     print('GPU {}:\t{}'.format(args.gpu, torch.cuda.get_device_name(args.gpu)))
-print('Perf.:\t{:.3f} ms per iter'.format((t1 - t0)/args.iteration * 1000.))
+print('{}:\t{:.3f} ms per iter'.format(args.precision.upper(), (t1 - t0)/args.iteration * 1000.))
