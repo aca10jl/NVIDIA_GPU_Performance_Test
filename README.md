@@ -4,7 +4,7 @@ Test the performance of NVIDIA GPUs.
 ## Usage
 1. Collect details of the workspace:
 ```bash
-python collect_env.py
+python -m torch.utils.collect_env
 ```
 2. Test on FP16
 ```bash
