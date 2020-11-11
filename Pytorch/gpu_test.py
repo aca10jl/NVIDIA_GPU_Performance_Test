@@ -11,7 +11,7 @@ parser.add_argument('--batch_size', '-b', default=32, type=int, help='Batch size
 parser.add_argument('--iteration', '-i', default=100, type=int, help='Test iterations')
 parser.add_argument('--gpu', '-g', default=0, type=int, help='GPU ID')
 parser.add_argument('--seed', '-s', default=666, type=int, help='Random seed')
-parser.add_argument('--precision', '-p', default='fp32', type=str, help='Precisions: fp32, fp16, tf32, mixed')
+parser.add_argument('--precision', '-p', default='fp32', choices=['fp32', 'fp16', 'tf32', 'mixed'], type=str.lower, help='Precisions: fp32, fp16, tf32, mixed')
 parser.add_argument('--data_parallel', '-dp', action='store_true', help='Data parallelisation')
 args = parser.parse_args()
 
@@ -110,4 +110,4 @@ if args.data_parallel:
         print('GPU {}:\t{}'.format(g, torch.cuda.get_device_name(g)))
 else:
     print('GPU {}:\t{}'.format(args.gpu, torch.cuda.get_device_name(args.gpu)))
-print('{}:\t{:.3f} ms per iter'.format(args.precision.upper(), (t1 - t0)/args.iteration * 1000.))
+print('{}:\t{:.3f}ms per iter'.format(args.precision.upper(), (t1 - t0)/args.iteration * 1000.))
