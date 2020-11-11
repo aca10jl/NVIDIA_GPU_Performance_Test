@@ -1,5 +1,4 @@
 # Workspace of RTX 3090
-- Personal desktop
 - CUDA: Release 11.1, V11.1.74
 - CPU: Intel(R) Core(TM) i9-10980XE CPU @ 3.00GHz (Stepping 7)
 - GPU: Nvidia RTX 3090 Founders Edition x 2 (NVLinked)
@@ -7,7 +6,7 @@
 - Memory: G.Skill 64 GB DDR4-3200 CL14 (F4-3200C14Q-64GTZR)
 - Storage: Samsung 970 PRO M.2
 
-Outputs from ```collect_env.py```:
+Outputs of ```python -m torch.utils.collect_env```:
 ```
 PyTorch version: 1.8.0a0+13decdd
 Is debug build: True
